@@ -1,7 +1,6 @@
 require 'fastlane/action'
 require_relative '../helper/browserstack_helper'
 require 'json'
-require 'rest-client'
 
 module Fastlane
   module Actions
@@ -10,7 +9,7 @@ module Fastlane
     end
     class UploadToBrowserstackAppAutomateAction < Action
       SUPPORTED_FILE_EXTENSIONS = ["apk", "ipa", "zip"]
-      UPLOAD_API_ENDPOINT = "api-cloud.browserstack.com/app-automate/upload"
+      UPLOAD_API_ENDPOINT = "https://api-cloud.browserstack.com/app-automate/upload"
 
       def self.run(params)
         browserstack_username = params[:browserstack_username] # Required

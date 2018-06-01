@@ -1,4 +1,5 @@
 require 'fastlane_core/ui/ui'
+require 'rest-client'
 
 module Fastlane
   UI = FastlaneCore::UI unless Fastlane.const_defined?("UI")
@@ -17,12 +18,19 @@ module Fastlane
       # +browserstack_username+:: BrowserStack's username.
       # +browserstack_access_key+:: BrowserStack's access key.
       # +file_path+:: Path to the file to be uploaded.
-      # +api_endpoint+:: BrowserStack's api endpoint, either AppAutomate or AppLive url.
-      def self.upload_file(browserstack_username, browserstack_access_key, file_path, api_endpoint)
-        url = "https://" + browserstack_username + ":" + browserstack_access_key + "@" + api_endpoint
-
+      # +url+:: BrowserStack's api endpoint, either AppAutomate or AppLive url.
+      def self.upload_file(browserstack_username, browserstack_access_key, file_path, url)
         begin
-          response = RestClient.post(url, file: File.new(file_path, 'rb'))
+          response = RestClient::Request.execute(
+            method: :post,
+            url: url,
+            user: browserstack_username,
+            password: browserstack_access_key,
+            payload: {
+              multipart: true,
+              file: File.new(file_path, 'rb')
+            }
+          )
         rescue RestClient::ExceptionWithResponse => err
           error_response = err.response
         end
