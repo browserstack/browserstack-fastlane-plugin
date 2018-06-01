@@ -7,8 +7,8 @@ require 'fastlane/plugin/browserstack/version'
 Gem::Specification.new do |spec|
   spec.name          = 'fastlane-plugin-browserstack'
   spec.version       = Fastlane::Browserstack::VERSION
-  spec.author        = 'Hitesh Raghuvanshi'
-  spec.email         = 'hitesh@browserstack.com'
+  spec.author        = 'BrowserStack'
+  spec.email         = 'support@browserstack.com'
 
   spec.summary       = 'Uploads IPA, APK and ZIP files to BrowserStack for manual and automation testing.'
   spec.homepage      = "https://github.com/browserstack/browserstack-fastlane-plugin"
