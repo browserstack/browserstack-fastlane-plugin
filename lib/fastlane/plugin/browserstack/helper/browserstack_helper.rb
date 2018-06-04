@@ -18,7 +18,7 @@ module Fastlane
       # +browserstack_username+:: BrowserStack's username.
       # +browserstack_access_key+:: BrowserStack's access key.
       # +file_path+:: Path to the file to be uploaded.
-      # +url+:: BrowserStack's api endpoint, either AppAutomate or AppLive url.
+      # +url+:: BrowserStack's app upload endpoint.
       def self.upload_file(browserstack_username, browserstack_access_key, file_path, url)
         begin
           response = RestClient::Request.execute(

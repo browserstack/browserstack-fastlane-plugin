@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.author        = 'BrowserStack'
   spec.email         = 'support@browserstack.com'
 
-  spec.summary       = 'Uploads IPA, APK and ZIP files to BrowserStack for manual and automation testing.'
+  spec.summary       = 'Uploads IPA and APK files to BrowserStack for automation testing.'
   spec.homepage      = "https://github.com/browserstack/browserstack-fastlane-plugin"
   spec.license       = "MIT"
 

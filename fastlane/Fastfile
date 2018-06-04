@@ -2,6 +2,6 @@ lane :test do
   upload_to_browserstack_app_automate(
     browserstack_username: ENV["BROWSERSTACK_USERNAME"],
     browserstack_access_key: ENV["BROWSERSTACK_ACCESS_KEY"],
-    file_path: "path_to_apk_or_ipa_or_zip_file"
+    file_path: "path_to_apk_or_ipa_file"
   )
 end

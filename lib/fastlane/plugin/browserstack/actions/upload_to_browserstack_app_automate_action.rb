@@ -8,7 +8,7 @@ module Fastlane
       BROWSERSTACK_APP_ID ||= :BROWSERSTACK_APP_ID
     end
     class UploadToBrowserstackAppAutomateAction < Action
-      SUPPORTED_FILE_EXTENSIONS = ["apk", "ipa", "zip"]
+      SUPPORTED_FILE_EXTENSIONS = ["apk", "ipa"]
       UPLOAD_API_ENDPOINT = "https://api-cloud.browserstack.com/app-automate/upload"
 
       def self.run(params)
@@ -37,13 +37,13 @@ module Fastlane
 
         # Validate file extension.
         file_path_parts = file_path.split(".")
-        unless file_path_parts.length > 1 && SUPPORTED_FILE_EXTENSIONS.include?(file_path_parts[file_path_parts.length - 1])
-          UI.user_error!("file_path is invalid, only files of type apk, ipa and zip are allowed.")
+        unless file_path_parts.length > 1 && SUPPORTED_FILE_EXTENSIONS.include?(file_path_parts.last)
+          UI.user_error!("file_path is invalid, only files with extensions apk and ipa are allowed to be uploaded.")
         end
       end
 
       def self.description
-        "Uploads IPA, APK and ZIP files to BrowserStack AppAutomate for running automated tests."
+        "Uploads IPA and APK files to BrowserStack AppAutomate for running automated tests."
       end
 
       def self.authors
@@ -51,7 +51,7 @@ module Fastlane
       end
 
       def self.details
-        "Uploads IPA, APK and ZIP files to BrowserStack AppAutomate for running automated tests."
+        "Uploads IPA and APK files to BrowserStack AppAutomate for running automated tests."
       end
 
       def self.output
@@ -96,7 +96,7 @@ module Fastlane
           'upload_to_browserstack_app_automate(
             browserstack_username: ENV["BROWSERSTACK_USERNAME"],
             browserstack_access_key: ENV["BROWSERSTACK_ACCESS_KEY"],
-            file_path: "path_to_apk_or_ipa_or_zip_file"
+            file_path: "path_to_apk_or_ipa_file"
            )'
         ]
       end

@@ -12,7 +12,7 @@ fastlane add_plugin browserstack
 
 ## About browserstack
 
-Uploads IPA, APK and ZIP files to BrowserStack for manual and automation testing.
+Uploads IPA and APK files to BrowserStack for automation testing.
 
 ## Example
 
