@@ -37,7 +37,7 @@ module Fastlane
 
         # Validate file extension.
         file_path_parts = file_path.split(".")
-        unless file_path_parts.length == 2 && SUPPORTED_FILE_EXTENSIONS.include?(file_path_parts[1])
+        unless file_path_parts.length > 1 && SUPPORTED_FILE_EXTENSIONS.include?(file_path_parts[file_path_parts.length - 1])
           UI.user_error!("file_path is invalid, only files of type apk, ipa and zip are allowed.")
         end
       end
