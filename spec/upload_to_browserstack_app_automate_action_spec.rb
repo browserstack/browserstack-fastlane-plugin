@@ -50,7 +50,7 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
             file_path: File.join(FIXTURE_PATH, 'DummyFile1')
           })
         end").runner.execute(:test)
-      end.to raise_error("file_path is invalid, only files of type apk and ipa are allowed.")
+      end.to raise_error("file_path is invalid, only files with extensions apk and ipa are allowed to be uploaded.")
     end
 
     it "raises an error if file_path have invalid file extension" do
@@ -62,7 +62,7 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
             file_path: File.join(FIXTURE_PATH, 'DummyFile2.txt')
           })
         end").runner.execute(:test)
-      end.to raise_error("file_path is invalid, only files of type apk and ipa are allowed.")
+      end.to raise_error("file_path is invalid, only files with extensions apk and ipa are allowed to be uploaded.")
     end
 
     it "raises an error if browserstack credentials are wrong" do
