@@ -5,11 +5,11 @@ require 'json'
 module Fastlane
   module Actions
     module SharedValues
-      BROWSERSTACK_APP_ID ||= :BROWSERSTACK_APP_ID
+      BROWSERSTACK_LIVE_APP_ID ||= :BROWSERSTACK_LIVE_APP_ID
     end
-    class UploadToBrowserstackAppAutomateAction < Action
+    class UploadToBrowserstackAppLiveAction < Action
       SUPPORTED_FILE_EXTENSIONS = ["apk", "ipa"]
-      UPLOAD_API_ENDPOINT = "https://api-cloud.browserstack.com/app-automate/upload"
+      UPLOAD_API_ENDPOINT = "https://api-cloud.browserstack.com/app-live/upload"
 
       def self.run(params)
         browserstack_username = params[:browserstack_username] # Required
@@ -18,19 +18,19 @@ module Fastlane
 
         validate_file_path(file_path)
 
-        UI.message("Uploading app to BrowserStack AppAutomate...")
+        UI.message("Uploading app to BrowserStack AppLive...")
 
         browserstack_app_id = Helper::BrowserstackHelper.upload_file(browserstack_username, browserstack_access_key, file_path, UPLOAD_API_ENDPOINT)
 
         # Set 'BROWSERSTACK_APP_ID' environment variable, if app upload was successful.
-        ENV['BROWSERSTACK_APP_ID'] = browserstack_app_id
+        ENV['BROWSERSTACK_LIVE_APP_ID'] = browserstack_app_id
 
-        UI.success("Successfully uploaded app " + file_path + " to BrowserStack AppAutomate with app_url : " + browserstack_app_id)
+        UI.success("Successfully uploaded app " + file_path + " to BrowserStack AppLive with app_url : " + browserstack_app_id)
 
-        UI.success("Setting Environment variable BROWSERSTACK_APP_ID = " + browserstack_app_id)
+        UI.success("Setting Environment variable BROWSERSTACK_LIVE_APP_ID = " + browserstack_app_id)
 
         # Setting app id in SharedValues, which can be used by other fastlane actions.
-        Actions.lane_context[SharedValues::BROWSERSTACK_APP_ID] = browserstack_app_id
+        Actions.lane_context[SharedValues::BROWSERSTACK_LIVE_APP_ID] = browserstack_app_id
       end
 
       # Validate file_path.
@@ -45,7 +45,7 @@ module Fastlane
       end
 
       def self.description
-        "Uploads IPA and APK files to BrowserStack AppAutomate for running automated tests."
+        "Uploads IPA and APK files to BrowserStack AppLive for running manual tests."
       end
 
       def self.authors
@@ -53,12 +53,12 @@ module Fastlane
       end
 
       def self.details
-        "Uploads IPA and APK files to BrowserStack AppAutomate for running automated tests."
+        "Uploads IPA and APK files to BrowserStack AppLive for running manual tests."
       end
 
       def self.output
         [
-          ['BROWSERSTACK_APP_ID', 'App id of uploaded app.']
+          ['BROWSERSTACK_LIVE_APP_ID', 'App id of uploaded app.']
         ]
       end
 
@@ -103,8 +103,8 @@ module Fastlane
 
       def self.example_code
         [
-          'upload_to_browserstack_app_automate',
-          'upload_to_browserstack_app_automate(
+          'upload_to_browserstack_app_live',
+          'upload_to_browserstack_app_live(
             browserstack_username: ENV["BROWSERSTACK_USERNAME"],
             browserstack_access_key: ENV["BROWSERSTACK_ACCESS_KEY"],
             file_path: "path_to_apk_or_ipa_file"

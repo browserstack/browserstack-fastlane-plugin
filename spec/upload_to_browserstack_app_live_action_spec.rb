@@ -1,9 +1,9 @@
-describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
-  describe 'Upload to BrowserStack AppAutomate' do
+describe Fastlane::Actions::UploadToBrowserstackAppLiveAction do
+  describe 'Upload to BrowserStack AppLive' do
     it "raises an error if no browserstack_username is given" do
       expect do
         Fastlane::FastFile.new.parse("lane :test do
-          upload_to_browserstack_app_automate({})
+          upload_to_browserstack_app_live({})
         end").runner.execute(:test)
       end.to raise_error("No browserstack_username given.")
     end
@@ -11,7 +11,7 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
     it "raises an error if no browserstack_access_key is given" do
       expect do
         Fastlane::FastFile.new.parse("lane :test do
-          upload_to_browserstack_app_automate({
+          upload_to_browserstack_app_live({
             browserstack_username: 'browserstack_username'
           })
         end").runner.execute(:test)
@@ -21,7 +21,7 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
     it "raises an error if no file_path is given" do
       expect do
         Fastlane::FastFile.new.parse("lane :test do
-          upload_to_browserstack_app_automate({
+          upload_to_browserstack_app_live({
             browserstack_username: 'browserstack_username',
             browserstack_access_key: 'browserstack_access_key'
           })
@@ -32,7 +32,7 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
     it "raises an error if no file present at given file_path" do
       expect do
         Fastlane::FastFile.new.parse("lane :test do
-          upload_to_browserstack_app_automate({
+          upload_to_browserstack_app_live({
             browserstack_username: 'browserstack_username',
             browserstack_access_key: 'browserstack_access_key',
             file_path: 'some/random/non/existing/file/path'
@@ -44,7 +44,7 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
     it "raises an error if file_path do not have any file extension" do
       expect do
         Fastlane::FastFile.new.parse("lane :test do
-          upload_to_browserstack_app_automate({
+          upload_to_browserstack_app_live({
             browserstack_username: 'browserstack_username',
             browserstack_access_key: 'browserstack_access_key',
             file_path: File.join(FIXTURE_PATH, 'DummyFile1')
@@ -56,7 +56,7 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
     it "raises an error if file_path have invalid file extension" do
       expect do
         Fastlane::FastFile.new.parse("lane :test do
-          upload_to_browserstack_app_automate({
+          upload_to_browserstack_app_live({
             browserstack_username: 'browserstack_username',
             browserstack_access_key: 'browserstack_access_key',
             file_path: File.join(FIXTURE_PATH, 'DummyFile2.txt')
@@ -68,7 +68,7 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
     it "raises an error if browserstack credentials are wrong" do
       expect do
         Fastlane::FastFile.new.parse("lane :test do
-          upload_to_browserstack_app_automate({
+          upload_to_browserstack_app_live({
             browserstack_username: 'browserstack_username',
             browserstack_access_key: 'browserstack_access_key',
             file_path: File.join(FIXTURE_PATH, 'HelloWorld.apk')
@@ -78,15 +78,15 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
     end
 
     it "should work with correct params" do
-      ENV['BROWSERSTACK_APP_ID'] = nil
+      ENV['BROWSERSTACK_LIVE_APP_ID'] = nil
       Fastlane::FastFile.new.parse("lane :test do
-          upload_to_browserstack_app_automate({
+          upload_to_browserstack_app_live({
             browserstack_username: ENV['BROWSERSTACK_USERNAME'],
             browserstack_access_key: ENV['BROWSERSTACK_ACCESS_KEY'],
             file_path: File.join(FIXTURE_PATH, 'HelloWorld.apk')
           })
         end").runner.execute(:test)
-      expect(ENV['BROWSERSTACK_APP_ID']).to satisfy { |value| !value.to_s.empty? }
+      expect(ENV['BROWSERSTACK_LIVE_APP_ID']).to satisfy { |value| !value.to_s.empty? }
     end
   end
 end
