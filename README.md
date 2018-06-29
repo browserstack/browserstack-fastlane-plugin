@@ -18,6 +18,8 @@ Uploads IPA and APK files to BrowserStack for automation and manual testing.
 
 Check out the [example `Fastfile`](fastlane/Fastfile) to see how to use this plugin. Try it by including that in your project's Fastfile, running `fastlane install_plugins` and `bundle exec fastlane test`.
 
+Please refer this [sample android project](https://github.com/browserstack/browserstack-android-sample-app), which demonstrates the use of this plugin.
+
 ## Run tests for this plugin
 
 To run both the tests, and code style validation, run
