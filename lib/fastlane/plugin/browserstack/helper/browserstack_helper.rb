@@ -17,23 +17,33 @@ module Fastlane
       # Params :
       # +browserstack_username+:: BrowserStack's username.
       # +browserstack_access_key+:: BrowserStack's access key.
+      # +browserstack_custom_id+:: BrowserStacks's custom id.
       # +file_path+:: Path to the file to be uploaded.
       # +url+:: BrowserStack's app upload endpoint.
-      def self.upload_file(browserstack_username, browserstack_access_key, file_path, url)
+      def self.upload_file(browserstack_username, browserstack_access_key, browserstack_custom_id, file_path, url)
         begin
+          payload = {
+            multipart: true,
+            file: File.new(file_path, 'rb')
+          }
+
+          unless browserstack_custom_id.nil?
+            payload[:data] = '{"custom_id": "' + browserstack_custom_id + '"}'
+          end
+
           response = RestClient::Request.execute(
             method: :post,
             url: url,
             user: browserstack_username,
             password: browserstack_access_key,
-            payload: {
-              multipart: true,
-              file: File.new(file_path, 'rb')
-            }
+            payload: payload
           )
         rescue RestClient::ExceptionWithResponse => err
           error_response = err.response
         end
+
+        # Return browserstack_custom_id if it was specified.
+        return browserstack_custom_id unless browserstack_custom_id.nil?
 
         # Return app_url if file was uploaded successfully.
         return JSON.parse(response.to_s)["app_url"] unless response.nil?
