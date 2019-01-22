@@ -88,5 +88,18 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
         end").runner.execute(:test)
       expect(ENV['BROWSERSTACK_APP_ID']).to satisfy { |value| !value.to_s.empty? }
     end
+
+    it "should work with custom id" do
+      ENV['BROWSERSTACK_APP_ID'] = nil
+      Fastlane::FastFile.new.parse("lane :test do
+          upload_to_browserstack_app_automate({
+            browserstack_username: ENV['BROWSERSTACK_USERNAME'],
+            browserstack_access_key: ENV['BROWSERSTACK_ACCESS_KEY'],
+            browserstack_custom_id: 'browserstack-fastlane-plugin-custom-id',
+            file_path: File.join(FIXTURE_PATH, 'HelloWorld.apk')
+          })
+        end").runner.execute(:test)
+      expect(ENV['BROWSERSTACK_APP_ID']).to eq('browserstack-fastlane-plugin-custom-id')
+    end
   end
 end
