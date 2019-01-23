@@ -20,7 +20,7 @@ module Fastlane
 
         UI.message("Uploading app to BrowserStack AppLive...")
 
-        browserstack_app_id = Helper::BrowserstackHelper.upload_file(browserstack_username, browserstack_access_key, nil, file_path, UPLOAD_API_ENDPOINT)
+        browserstack_app_id = Helper::BrowserstackHelper.upload_file(browserstack_username, browserstack_access_key, file_path, UPLOAD_API_ENDPOINT)
 
         # Set 'BROWSERSTACK_APP_ID' environment variable, if app upload was successful.
         ENV['BROWSERSTACK_LIVE_APP_ID'] = browserstack_app_id
