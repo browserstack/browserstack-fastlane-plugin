@@ -10,9 +10,14 @@ This project is a [_fastlane_](https://github.com/fastlane/fastlane) plugin. To 
 fastlane add_plugin browserstack
 ```
 
-## About browserstack
+## About
 
 Uploads IPA and APK files to BrowserStack for automation and manual testing.
+
+## Documentation
+
+Refer [App Automate](https://www.browserstack.com/app-automate/appium/fastlane) and [App Live](https://www.browserstack.com/app-live/fastlane) for more information on using this plugin.
+
 
 ## Example
 
