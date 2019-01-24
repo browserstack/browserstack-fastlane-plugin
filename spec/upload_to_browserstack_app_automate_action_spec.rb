@@ -95,7 +95,7 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
           upload_to_browserstack_app_automate({
             browserstack_username: ENV['BROWSERSTACK_USERNAME'],
             browserstack_access_key: ENV['BROWSERSTACK_ACCESS_KEY'],
-            browserstack_custom_id: 'browserstack-fastlane-plugin-custom-id',
+            custom_id: 'browserstack-fastlane-plugin-custom-id',
             file_path: File.join(FIXTURE_PATH, 'HelloWorld.apk')
           })
         end").runner.execute(:test)

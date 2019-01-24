@@ -14,14 +14,14 @@ module Fastlane
       def self.run(params)
         browserstack_username = params[:browserstack_username] # Required
         browserstack_access_key = params[:browserstack_access_key] # Required
-        browserstack_custom_id = params[:browserstack_custom_id]
+        custom_id = params[:custom_id]
         file_path = params[:file_path].to_s # Required
 
         validate_file_path(file_path)
 
         UI.message("Uploading app to BrowserStack AppAutomate...")
 
-        browserstack_app_id = Helper::BrowserstackHelper.upload_file(browserstack_username, browserstack_access_key, file_path, UPLOAD_API_ENDPOINT, browserstack_custom_id)
+        browserstack_app_id = Helper::BrowserstackHelper.upload_file(browserstack_username, browserstack_access_key, file_path, UPLOAD_API_ENDPOINT, custom_id)
 
         # Set 'BROWSERSTACK_APP_ID' environment variable, if app upload was successful.
         ENV['BROWSERSTACK_APP_ID'] = browserstack_app_id
@@ -90,8 +90,8 @@ module Fastlane
                                        verify_block: proc do |value|
                                          UI.user_error!("No browserstack_access_key given.") if value.to_s.empty?
                                        end),
-          FastlaneCore::ConfigItem.new(key: :browserstack_custom_id,
-                                       description: "BrowserStack's custom id",
+          FastlaneCore::ConfigItem.new(key: :custom_id,
+                                       description: "Custom id",
                                        optional: true,
                                        is_string: true),
           FastlaneCore::ConfigItem.new(key: :file_path,
