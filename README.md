@@ -16,7 +16,7 @@ Uploads IPA and APK files to BrowserStack for automation and manual testing.
 
 ## Documentation
 
-Refer [App Automate](https://www.browserstack.com/app-automate/appium/fastlane) and [App Live](https://www.browserstack.com/app-live/fastlane) for more info on using this plugin.
+Refer [App Automate](https://www.browserstack.com/app-automate/appium/fastlane) and [App Live](https://www.browserstack.com/app-live/fastlane) for more information on using this plugin.
 
 
 ## Example
