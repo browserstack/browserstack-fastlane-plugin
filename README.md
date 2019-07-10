@@ -32,7 +32,9 @@ upload_to_browserstack_app_automate(
 )
 ```
 ```
-Note: custom_id is optional. You can upload multiple builds under the same custom_id. Use custom_id in 'app' capability for Appium to always pick the last uploaded build. The file_path parameter is not required if the app was built in the same lane with the help of Gradle or Gym plugin.
+Note: custom_id is optional. You can upload multiple builds under the same custom_id.   
+Use custom_id in 'app' capability for Appium to always pick the last uploaded build.   
+The file_path parameter is not required if the app was built in the same lane with the help of Gradle or Gym plugin.
 ```
 
 For uploading your app to AppLive use the following action in the fastfile
