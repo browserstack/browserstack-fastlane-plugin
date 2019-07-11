@@ -40,9 +40,9 @@ The file_path parameter is not required if the app was built in the same lane wi
 For uploading your app to AppLive use the following action in the fastfile
 ```
 upload_to_browserstack_app_live(
-browserstack_username: ENV["BROWSERSTACK_USERNAME"],
-browserstack_access_key: ENV["BROWSERSTACK_ACCESS_KEY"],
-file_path: "<path_to_apk_or_ipa_file>"
+  browserstack_username: ENV["BROWSERSTACK_USERNAME"],
+  browserstack_access_key: ENV["BROWSERSTACK_ACCESS_KEY"],
+  file_path: "<path_to_apk_or_ipa_file>"
 )
 ```
 Check out the example [Fastfile](https://github.com/browserstack/browserstack-fastlane-plugin/blob/master/fastlane/Fastfile) to see how to use this plugin. Try it by including that in your project's Fastfile, running `fastlane install_plugins` and `bundle exec fastlane test`. Please refer to this [sample android project](https://github.com/browserstack/browserstack-android-sample-app), which demonstrates the use of this plugin.
