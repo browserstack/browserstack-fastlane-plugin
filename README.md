@@ -4,7 +4,7 @@
 
 ## Getting Started
 
-This project is a [_fastlane_](https://github.com/fastlane/fastlane) plugin. To get started with `browserstack-fastlane-plugin`, add it to your project by running:
+This project is a [_fastlane_](https://github.com/fastlane/fastlane) plugin. To get started with `fastlane-plugin-browserstack`, add it to your project by running:
 
 ```bash
 fastlane add_plugin browserstack
@@ -22,12 +22,12 @@ Refer [App Automate](https://www.browserstack.com/app-automate/appium/fastlane) 
 ## Example
 
 Please refer this [sample android project](https://github.com/browserstack/browserstack-android-sample-app), which demonstrates the use of this plugin.
-You can easily upload your app using [BrowserStack Faslane Plugin](https://rubygems.org/gems/fastlane-plugin-browserstack) and execute your test on BrowserStack cloud. In order to configure the plugin add below action in your Fastfile. You can also check our [repository](https://github.com/browserstack/browserstack-fastlane-plugin).
+You can easily upload your app using [BrowserStack fastlane Plugin](https://rubygems.org/gems/fastlane-plugin-browserstack) and execute your test on BrowserStack cloud. In order to configure the plugin add below action in your Fastfile. You can also check our [repository](https://github.com/browserstack/browserstack-fastlane-plugin).
 ```
 upload_to_browserstack_app_automate(
   browserstack_username: ENV["BROWSERSTACK_USERNAME"],
   browserstack_access_key: ENV["BROWSERSTACK_ACCESS_KEY"],
-  file_path: "browserstack_android_sample/build/outputs/apk/debug/browserstack_android_sample-debug.apk",
+  file_path: "<path_to_your_apk_or_ipa_file>",
   custom_id: "<custom_id_name>"
 )
 ```
@@ -42,7 +42,7 @@ For uploading your app to AppLive use the following action in the fastfile
 upload_to_browserstack_app_live(
 browserstack_username: ENV["BROWSERSTACK_USERNAME"],
 browserstack_access_key: ENV["BROWSERSTACK_ACCESS_KEY"],
-file_path: "path_to_apk_or_ipa_file"
+file_path: "<path_to_apk_or_ipa_file>"
 )
 ```
 Check out the example [Fastfile](https://github.com/browserstack/browserstack-fastlane-plugin/blob/master/fastlane/Fastfile) to see how to use this plugin. Try it by including that in your project's Fastfile, running `fastlane install_plugins` and `bundle exec fastlane test`. Please refer to this [sample android project](https://github.com/browserstack/browserstack-android-sample-app), which demonstrates the use of this plugin.
@@ -75,11 +75,11 @@ For any other issues and feedback about this plugin, please submit it to this re
 
 If you have trouble using plugins, check out the [Plugins Troubleshooting guide](https://docs.fastlane.tools/plugins/plugins-troubleshooting/).
 
-## Using _Fastlane_ Plugins
+## Using _fastlane_ Plugins
 
-For more information about how the `Fastlane` plugin system works, check out the [Plugins documentation](https://docs.fastlane.tools/plugins/create-plugin/).
+For more information about how the `fastlane` plugin system works, check out the [Plugins documentation](https://docs.fastlane.tools/plugins/create-plugin/).
 
-## About _Fastlane_
+## About _fastlane_
 
-_Fastlane_ is the easiest way to automate beta deployments and releases for your iOS and Android apps. To learn more, check out [Fastlane.tools](https://fastlane.tools).
+_fastlane_ is the easiest way to automate beta deployments and releases for your iOS and Android apps. To learn more, check out [fastlane.tools](https://fastlane.tools).
 
