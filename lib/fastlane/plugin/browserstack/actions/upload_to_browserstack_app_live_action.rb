@@ -8,7 +8,7 @@ module Fastlane
       BROWSERSTACK_LIVE_APP_ID ||= :BROWSERSTACK_LIVE_APP_ID
     end
     class UploadToBrowserstackAppLiveAction < Action
-      SUPPORTED_FILE_EXTENSIONS = ["apk", "ipa"]
+      SUPPORTED_FILE_EXTENSIONS = ["apk", "ipa", "aab"]
       UPLOAD_API_ENDPOINT = "https://api-cloud.browserstack.com/app-live/upload"
 
       def self.run(params)
