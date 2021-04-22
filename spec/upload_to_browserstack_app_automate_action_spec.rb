@@ -1,5 +1,7 @@
 describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
   describe 'Upload to BrowserStack AppAutomate' do
+    let(:custom_id) { "customId" }
+
     it "raises an error if no browserstack_username is given" do
       expect do
         Fastlane::FastFile.new.parse("lane :test do
@@ -79,27 +81,30 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
 
     it "should work with correct params" do
       ENV['BROWSERSTACK_APP_ID'] = nil
+      expect(RestClient::Request).to receive(:execute).and_return({ "app_url" => "bs://app_url" }.to_json)
       Fastlane::FastFile.new.parse("lane :test do
           upload_to_browserstack_app_automate({
-            browserstack_username: ENV['BROWSERSTACK_USERNAME'],
-            browserstack_access_key: ENV['BROWSERSTACK_ACCESS_KEY'],
+            browserstack_username: 'browserstack_username',
+            browserstack_access_key: 'browserstack_access_key',
             file_path: File.join(FIXTURE_PATH, 'HelloWorld.apk')
           })
         end").runner.execute(:test)
-      expect(ENV['BROWSERSTACK_APP_ID']).to satisfy { |value| !value.to_s.empty? }
+
+      expect(ENV['BROWSERSTACK_APP_ID']).to eq("bs://app_url")
     end
 
     it "should work with custom id" do
       ENV['BROWSERSTACK_APP_ID'] = nil
+      expect(RestClient::Request).to receive(:execute).and_return({ "app_url" => "bs://app_url", "custom_id" => custom_id, "shareable_id" => "username/#{custom_id}" }.to_json)
       Fastlane::FastFile.new.parse("lane :test do
           upload_to_browserstack_app_automate({
-            browserstack_username: ENV['BROWSERSTACK_USERNAME'],
-            browserstack_access_key: ENV['BROWSERSTACK_ACCESS_KEY'],
-            custom_id: 'browserstack-fastlane-plugin-custom-id',
+            browserstack_username: 'username',
+            browserstack_access_key: 'access_key',
+            custom_id: '#{custom_id}',
             file_path: File.join(FIXTURE_PATH, 'HelloWorld.apk')
           })
         end").runner.execute(:test)
-      expect(ENV['BROWSERSTACK_APP_ID']).to eq('browserstack-fastlane-plugin-custom-id')
+      expect(ENV['BROWSERSTACK_APP_ID']).to eq(custom_id)
     end
   end
 end

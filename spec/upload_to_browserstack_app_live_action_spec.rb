@@ -79,14 +79,15 @@ describe Fastlane::Actions::UploadToBrowserstackAppLiveAction do
 
     it "should work with correct params" do
       ENV['BROWSERSTACK_LIVE_APP_ID'] = nil
+      expect(RestClient::Request).to receive(:execute).and_return({ "app_url" => "bs://app_url" }.to_json)
       Fastlane::FastFile.new.parse("lane :test do
           upload_to_browserstack_app_live({
-            browserstack_username: ENV['BROWSERSTACK_USERNAME'],
-            browserstack_access_key: ENV['BROWSERSTACK_ACCESS_KEY'],
+            browserstack_username: 'username',
+            browserstack_access_key: 'access_key',
             file_path: File.join(FIXTURE_PATH, 'HelloWorld.apk')
           })
         end").runner.execute(:test)
-      expect(ENV['BROWSERSTACK_LIVE_APP_ID']).to satisfy { |value| !value.to_s.empty? }
+      expect(ENV['BROWSERSTACK_LIVE_APP_ID']).to eq("bs://app_url")
     end
   end
 end
