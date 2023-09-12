@@ -14,14 +14,15 @@ module Fastlane
       def self.run(params)
         browserstack_username = params[:browserstack_username] # Required
         browserstack_access_key = params[:browserstack_access_key] # Required
-        custom_id = params[:custom_id]
+#         custom_id = params[:custom_id]
+        ios_keychain_support = params[:ios_keychain_support]
         file_path = params[:file_path].to_s # Required
 
         validate_file_path(file_path)
 
         UI.message("Uploading app to BrowserStack AppAutomate...")
 
-        browserstack_app_id = Helper::BrowserstackHelper.upload_file(browserstack_username, browserstack_access_key, file_path, UPLOAD_API_ENDPOINT, custom_id)
+        browserstack_app_id = Helper::BrowserstackHelper.upload_file(browserstack_username, browserstack_access_key, file_path, UPLOAD_API_ENDPOINT, ios_keychain_support)
 
         # Set 'BROWSERSTACK_APP_ID' environment variable, if app upload was successful.
         ENV['BROWSERSTACK_APP_ID'] = browserstack_app_id
@@ -98,7 +99,13 @@ module Fastlane
                                        description: "Path to the app file",
                                        optional: true,
                                        is_string: true,
-                                       default_value: default_file_path)
+                                       default_value: default_file_path),
+          FastlaneCore::ConfigItem.new(key: :ios_keychain_support,
+                                       description: "Enable iOS Keychain Sharing",
+                                       optional: true,
+                                       is_string: false,
+                                       default_value: false)
+
         ]
       end
 
@@ -112,7 +119,8 @@ module Fastlane
           'upload_to_browserstack_app_automate(
             browserstack_username: ENV["BROWSERSTACK_USERNAME"],
             browserstack_access_key: ENV["BROWSERSTACK_ACCESS_KEY"],
-            file_path: "path_to_apk_or_ipa_file"
+            file_path: "path_to_apk_or_ipa_file",
+            ios_keychain_support: true
            )'
         ]
       end
