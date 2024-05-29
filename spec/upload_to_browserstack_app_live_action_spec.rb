@@ -1,5 +1,11 @@
 describe Fastlane::Actions::UploadToBrowserstackAppLiveAction do
   describe 'Upload to BrowserStack AppLive' do
+
+    before(:each) do
+      Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::GRADLE_APK_OUTPUT_PATH] = nil
+      Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::GRADLE_AAB_OUTPUT_PATH] = nil
+    end
+
     it "raises an error if no browserstack_username is given" do
       expect do
         Fastlane::FastFile.new.parse("lane :test do
@@ -77,7 +83,42 @@ describe Fastlane::Actions::UploadToBrowserstackAppLiveAction do
       end.to raise_error(/App upload failed!!! Reason :/)
     end
 
-    it "should work with correct params" do
+    it "raises an error if neither GRADLE_APK_OUTPUT_PATH or GRADLE_AAB_OUTPUT_PATH available on android" do
+      expect do
+        Fastlane::FastFile.new.parse("lane :test do
+          upload_to_browserstack_app_live({
+            browserstack_username: 'browserstack_username',
+            browserstack_access_key: 'browserstack_access_key',
+          })
+        end").runner.execute(:test)
+      end.to raise_error('No file found at \'\'.')
+    end
+
+    it "should work with correct params defaulting with apk on android" do
+      Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::GRADLE_APK_OUTPUT_PATH] = File.join(FIXTURE_PATH, 'HelloWorld.apk')
+      expect(RestClient::Request).to receive(:execute).and_return({ "app_url" => "bs://app_url" }.to_json)
+      Fastlane::FastFile.new.parse("lane :test do
+          upload_to_browserstack_app_live({
+            browserstack_username: 'username',
+            browserstack_access_key: 'access_key',
+          })
+        end").runner.execute(:test)
+      expect(ENV['BROWSERSTACK_LIVE_APP_ID']).to eq("bs://app_url")
+    end
+
+    it "should work with correct params defaulting with aab on android" do
+      Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::GRADLE_AAB_OUTPUT_PATH] = File.join(FIXTURE_PATH, 'HelloWorld.aab')
+      expect(RestClient::Request).to receive(:execute).and_return({ "app_url" => "bs://app_url" }.to_json)
+      Fastlane::FastFile.new.parse("lane :test do
+          upload_to_browserstack_app_live({
+            browserstack_username: 'username',
+            browserstack_access_key: 'access_key',
+          })
+        end").runner.execute(:test)
+      expect(ENV['BROWSERSTACK_LIVE_APP_ID']).to eq("bs://app_url")
+    end
+
+    it "should work with correct params and specific file_path" do
       ENV['BROWSERSTACK_LIVE_APP_ID'] = nil
       expect(RestClient::Request).to receive(:execute).and_return({ "app_url" => "bs://app_url" }.to_json)
       Fastlane::FastFile.new.parse("lane :test do
