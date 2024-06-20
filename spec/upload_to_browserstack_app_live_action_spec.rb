@@ -1,6 +1,5 @@
 describe Fastlane::Actions::UploadToBrowserstackAppLiveAction do
   describe 'Upload to BrowserStack AppLive' do
-
     before(:each) do
       Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::GRADLE_APK_OUTPUT_PATH] = nil
       Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::GRADLE_AAB_OUTPUT_PATH] = nil
