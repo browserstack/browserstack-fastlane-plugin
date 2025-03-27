@@ -146,5 +146,26 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
         end").runner.execute(:test)
       expect(ENV['BROWSERSTACK_APP_ID']).to eq(custom_id)
     end
+
+    it "should work with ios keychain support" do
+      ENV['BROWSERSTACK_APP_ID'] = nil
+      Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::IPA_OUTPUT_PATH] = nil
+
+      expect(RestClient::Request).to receive(:execute).and_return({ "app_url" => "bs://app_url", "ios_keychain_support" => true }.to_json)
+      fastfile = Fastlane::FastFile.new.parse("
+        platform :ios do
+          lane :test do
+            upload_to_browserstack_app_automate({
+              browserstack_username: 'username',
+              browserstack_access_key: 'access_key',
+              ios_keychain_support: 'true',
+              file_path: File.join(FIXTURE_PATH, 'HelloWorld.apk')
+            })
+          end
+        end
+      ")
+      fastfile.runner.execute(:test, :ios)
+      expect(ENV['BROWSERSTACK_APP_ID']).to eq("bs://app_url")
+    end
   end
 end
