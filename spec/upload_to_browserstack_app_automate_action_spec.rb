@@ -159,7 +159,7 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
               browserstack_username: 'username',
               browserstack_access_key: 'access_key',
               ios_keychain_support: 'true',
-              file_path: File.join(FIXTURE_PATH, 'HelloWorld.apk')
+              file_path: File.join(FIXTURE_PATH, 'HelloWorld.ipa')
             })
           end
         end

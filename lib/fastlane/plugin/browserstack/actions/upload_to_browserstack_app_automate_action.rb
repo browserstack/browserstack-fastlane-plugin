@@ -122,7 +122,7 @@ module Fastlane
                                        is_string: true,
                                        default_value: default_file_path),
           FastlaneCore::ConfigItem.new(key: :ios_keychain_support,
-                                       description: "ios_keychain_support",
+                                       description: "Enable/disable support for iOS keychain",
                                        optional: true,
                                        is_string: true)
         ]
