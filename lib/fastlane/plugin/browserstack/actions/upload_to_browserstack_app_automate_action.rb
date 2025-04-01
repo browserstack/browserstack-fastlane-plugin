@@ -16,12 +16,14 @@ module Fastlane
         browserstack_access_key = params[:browserstack_access_key] # Required
         custom_id = params[:custom_id]
         file_path = params[:file_path].to_s # Required
+        ios_keychain_support = params[:ios_keychain_support]
 
         validate_file_path(file_path)
+        validate_ios_keychain_support(ios_keychain_support) unless ios_keychain_support.nil?
 
         UI.message("Uploading app to BrowserStack AppAutomate...")
 
-        browserstack_app_id = Helper::BrowserstackHelper.upload_file(browserstack_username, browserstack_access_key, file_path, UPLOAD_API_ENDPOINT, custom_id)
+        browserstack_app_id = Helper::BrowserstackHelper.upload_file(browserstack_username, browserstack_access_key, file_path, UPLOAD_API_ENDPOINT, custom_id, ios_keychain_support)
 
         # Set 'BROWSERSTACK_APP_ID' environment variable, if app upload was successful.
         ENV['BROWSERSTACK_APP_ID'] = browserstack_app_id
@@ -42,6 +44,19 @@ module Fastlane
         file_path_parts = file_path.split(".")
         unless file_path_parts.length > 1 && SUPPORTED_FILE_EXTENSIONS.include?(file_path_parts.last)
           UI.user_error!("file_path is invalid, only files with extensions " + SUPPORTED_FILE_EXTENSIONS.to_s + " are allowed to be uploaded.")
+        end
+      end
+
+      # Validate ios_keychain_support
+      def self.validate_ios_keychain_support(ios_keychain_support)
+        platform = Actions.lane_context[Actions::SharedValues::PLATFORM_NAME]
+        if !platform.nil? && platform != :ios
+          # Check if platform is specified and not ios
+          # If so, then raise error.
+          UI.user_error!("ios_keychain_support param can only be used with platform ios")
+        end
+        unless ['true', 'false'].include?(ios_keychain_support.to_s)
+          UI.user_error!("ios_keychain_support should be either 'true' or 'false'.")
         end
       end
 
@@ -105,7 +120,11 @@ module Fastlane
                                        description: "Path to the app file",
                                        optional: true,
                                        is_string: true,
-                                       default_value: default_file_path)
+                                       default_value: default_file_path),
+          FastlaneCore::ConfigItem.new(key: :ios_keychain_support,
+                                       description: "Enable/disable support for iOS keychain",
+                                       optional: true,
+                                       is_string: true)
         ]
       end
 

@@ -20,7 +20,7 @@ module Fastlane
       # +custom_id+:: Custom id for app upload.
       # +file_path+:: Path to the file to be uploaded.
       # +url+:: BrowserStack's app upload endpoint.
-      def self.upload_file(browserstack_username, browserstack_access_key, file_path, url, custom_id = nil)
+      def self.upload_file(browserstack_username, browserstack_access_key, file_path, url, custom_id = nil, ios_keychain_support = nil)
         payload = {
           multipart: true,
           file: File.new(file_path, 'rb')
@@ -28,6 +28,10 @@ module Fastlane
 
         unless custom_id.nil?
           payload[:data] = '{ "custom_id": "' + custom_id + '" }'
+        end
+
+        unless ios_keychain_support.nil?
+          payload[:ios_keychain_support] = ios_keychain_support
         end
 
         headers = {
