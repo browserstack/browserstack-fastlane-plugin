@@ -150,7 +150,6 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
     it "should work with ios keychain support" do
       ENV['BROWSERSTACK_APP_ID'] = nil
       Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::IPA_OUTPUT_PATH] = nil
-
       expect(RestClient::Request).to receive(:execute).and_return({ "app_url" => "bs://app_url", "ios_keychain_support" => true }.to_json)
       fastfile = Fastlane::FastFile.new.parse("
         platform :ios do
