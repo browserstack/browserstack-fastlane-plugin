@@ -48,12 +48,7 @@ module Fastlane
           )
 
           response_json = JSON.parse(response.to_s)
-
-          if !response_json["custom_id"].nil?
-            return response_json["custom_id"]
-          else
-            return response_json["app_url"]
-          end
+          return response_json["app_url"]
         rescue RestClient::ExceptionWithResponse => err
           begin
             error_response = JSON.parse(err.response.to_s)["error"]
