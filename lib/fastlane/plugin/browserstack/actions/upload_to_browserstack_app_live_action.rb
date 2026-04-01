@@ -20,7 +20,8 @@ module Fastlane
 
         UI.message("Uploading app to BrowserStack AppLive...")
 
-        browserstack_app_id = Helper::BrowserstackHelper.upload_file(browserstack_username, browserstack_access_key, file_path, UPLOAD_API_ENDPOINT)
+        upload_response = Helper::BrowserstackHelper.upload_file(browserstack_username, browserstack_access_key, file_path, UPLOAD_API_ENDPOINT)
+        browserstack_app_id = upload_response["app_url"]
 
         # Set 'BROWSERSTACK_APP_ID' environment variable, if app upload was successful.
         ENV['BROWSERSTACK_LIVE_APP_ID'] = browserstack_app_id
@@ -58,7 +59,7 @@ module Fastlane
 
       def self.output
         [
-          ['BROWSERSTACK_LIVE_APP_ID', 'App id of uploaded app.']
+          ['BROWSERSTACK_LIVE_APP_ID', 'App URL of uploaded app.']
         ]
       end
 
@@ -84,6 +85,7 @@ module Fastlane
         [
           FastlaneCore::ConfigItem.new(key: :browserstack_username,
                                        description: "BrowserStack's username",
+                                       env_name: "BROWSERSTACK_USERNAME",
                                        optional: false,
                                        is_string: true,
                                        verify_block: proc do |value|
@@ -91,6 +93,7 @@ module Fastlane
                                        end),
           FastlaneCore::ConfigItem.new(key: :browserstack_access_key,
                                        description: "BrowserStack's access key",
+                                       env_name: "BROWSERSTACK_ACCESS_KEY",
                                        optional: false,
                                        is_string: true,
                                        verify_block: proc do |value|
@@ -98,6 +101,7 @@ module Fastlane
                                        end),
           FastlaneCore::ConfigItem.new(key: :file_path,
                                        description: "Path to the app file",
+                                       env_name: "BROWSERSTACK_FILE_PATH",
                                        optional: true,
                                        is_string: true,
                                        default_value: default_file_path)

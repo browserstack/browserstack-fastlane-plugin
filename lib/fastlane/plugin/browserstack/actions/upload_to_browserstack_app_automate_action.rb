@@ -6,6 +6,7 @@ module Fastlane
   module Actions
     module SharedValues
       BROWSERSTACK_APP_ID ||= :BROWSERSTACK_APP_ID
+      BROWSERSTACK_CUSTOM_ID ||= :BROWSERSTACK_CUSTOM_ID
     end
     class UploadToBrowserstackAppAutomateAction < Action
       SUPPORTED_FILE_EXTENSIONS = ["apk", "ipa", "aab"]
@@ -23,17 +24,22 @@ module Fastlane
 
         UI.message("Uploading app to BrowserStack AppAutomate...")
 
-        browserstack_app_id = Helper::BrowserstackHelper.upload_file(browserstack_username, browserstack_access_key, file_path, UPLOAD_API_ENDPOINT, custom_id, ios_keychain_support)
+        upload_response = Helper::BrowserstackHelper.upload_file(browserstack_username, browserstack_access_key, file_path, UPLOAD_API_ENDPOINT, custom_id, ios_keychain_support)
+        browserstack_app_id = upload_response["app_url"]
+        browserstack_custom_id = upload_response["custom_id"] || ""
 
         # Set 'BROWSERSTACK_APP_ID' environment variable, if app upload was successful.
         ENV['BROWSERSTACK_APP_ID'] = browserstack_app_id
+        ENV['BROWSERSTACK_CUSTOM_ID'] = browserstack_custom_id
 
         UI.success("Successfully uploaded app " + file_path + " to BrowserStack AppAutomate with app_url : " + browserstack_app_id)
 
         UI.success("Setting Environment variable BROWSERSTACK_APP_ID = " + browserstack_app_id)
+        UI.success("Setting Environment variable BROWSERSTACK_CUSTOM_ID = " + browserstack_custom_id)
 
         # Setting app id in SharedValues, which can be used by other fastlane actions.
         Actions.lane_context[SharedValues::BROWSERSTACK_APP_ID] = browserstack_app_id
+        Actions.lane_context[SharedValues::BROWSERSTACK_CUSTOM_ID] = browserstack_custom_id
       end
 
       # Validate file_path.
@@ -74,7 +80,8 @@ module Fastlane
 
       def self.output
         [
-          ['BROWSERSTACK_APP_ID', 'App id of uploaded app.']
+          ['BROWSERSTACK_APP_ID', 'App URL of uploaded app.'],
+          ['BROWSERSTACK_CUSTOM_ID', 'Custom id of uploaded app. Empty string when custom_id is not set.']
         ]
       end
 
@@ -100,6 +107,7 @@ module Fastlane
         [
           FastlaneCore::ConfigItem.new(key: :browserstack_username,
                                        description: "BrowserStack's username",
+                                       env_name: "BROWSERSTACK_USERNAME",
                                        optional: false,
                                        is_string: true,
                                        verify_block: proc do |value|
@@ -107,6 +115,7 @@ module Fastlane
                                        end),
           FastlaneCore::ConfigItem.new(key: :browserstack_access_key,
                                        description: "BrowserStack's access key",
+                                       env_name: "BROWSERSTACK_ACCESS_KEY",
                                        optional: false,
                                        is_string: true,
                                        verify_block: proc do |value|
@@ -114,15 +123,18 @@ module Fastlane
                                        end),
           FastlaneCore::ConfigItem.new(key: :custom_id,
                                        description: "Custom id",
+                                       env_name: "BROWSERSTACK_CUSTOM_ID",
                                        optional: true,
                                        is_string: true),
           FastlaneCore::ConfigItem.new(key: :file_path,
                                        description: "Path to the app file",
+                                       env_name: "BROWSERSTACK_FILE_PATH",
                                        optional: true,
                                        is_string: true,
                                        default_value: default_file_path),
           FastlaneCore::ConfigItem.new(key: :ios_keychain_support,
                                        description: "Enable/disable support for iOS keychain",
+                                       env_name: "BROWSERSTACK_IOS_KEYCHAIN_SUPPORT",
                                        optional: true,
                                        is_string: true)
         ]

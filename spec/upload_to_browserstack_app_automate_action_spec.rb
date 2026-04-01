@@ -3,8 +3,16 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
     let(:custom_id) { "customId" }
 
     before(:each) do
+      ENV['BROWSERSTACK_USERNAME'] = nil
+      ENV['BROWSERSTACK_ACCESS_KEY'] = nil
+      ENV['BROWSERSTACK_FILE_PATH'] = nil
+      ENV['BROWSERSTACK_CUSTOM_ID'] = nil
+      ENV['BROWSERSTACK_IOS_KEYCHAIN_SUPPORT'] = nil
+      ENV['BROWSERSTACK_APP_ID'] = nil
       Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::GRADLE_APK_OUTPUT_PATH] = nil
       Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::GRADLE_AAB_OUTPUT_PATH] = nil
+      Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::BROWSERSTACK_APP_ID] = nil
+      Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::BROWSERSTACK_CUSTOM_ID] = nil
     end
 
     it "raises an error if no browserstack_username is given" do
@@ -102,9 +110,12 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
           upload_to_browserstack_app_automate({
             browserstack_username: 'browserstack_username',
             browserstack_access_key: 'browserstack_access_key',
-          })
+           })
         end").runner.execute(:test)
       expect(ENV['BROWSERSTACK_APP_ID']).to eq("bs://app_url")
+      expect(ENV['BROWSERSTACK_CUSTOM_ID']).to eq("")
+      expect(Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::BROWSERSTACK_APP_ID]).to eq("bs://app_url")
+      expect(Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::BROWSERSTACK_CUSTOM_ID]).to eq("")
     end
 
     it "should work with correct params defaulting with aab on android" do
@@ -120,7 +131,6 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
     end
 
     it "should work with correct params and specific file_path" do
-      ENV['BROWSERSTACK_APP_ID'] = nil
       expect(RestClient::Request).to receive(:execute).and_return({ "app_url" => "bs://app_url" }.to_json)
       Fastlane::FastFile.new.parse("lane :test do
           upload_to_browserstack_app_automate({
@@ -131,24 +141,27 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
         end").runner.execute(:test)
 
       expect(ENV['BROWSERSTACK_APP_ID']).to eq("bs://app_url")
+      expect(ENV['BROWSERSTACK_CUSTOM_ID']).to eq("")
+      expect(Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::BROWSERSTACK_CUSTOM_ID]).to eq("")
     end
 
     it "should work with custom id" do
-      ENV['BROWSERSTACK_APP_ID'] = nil
       expect(RestClient::Request).to receive(:execute).and_return({ "app_url" => "bs://app_url", "custom_id" => custom_id, "shareable_id" => "username/#{custom_id}" }.to_json)
       Fastlane::FastFile.new.parse("lane :test do
           upload_to_browserstack_app_automate({
             browserstack_username: 'username',
             browserstack_access_key: 'access_key',
             custom_id: '#{custom_id}',
-            file_path: File.join(FIXTURE_PATH, 'HelloWorld.apk')
-          })
+             file_path: File.join(FIXTURE_PATH, 'HelloWorld.apk')
+           })
         end").runner.execute(:test)
-      expect(ENV['BROWSERSTACK_APP_ID']).to eq(custom_id)
+      expect(ENV['BROWSERSTACK_APP_ID']).to eq("bs://app_url")
+      expect(ENV['BROWSERSTACK_CUSTOM_ID']).to eq(custom_id)
+      expect(Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::BROWSERSTACK_APP_ID]).to eq("bs://app_url")
+      expect(Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::BROWSERSTACK_CUSTOM_ID]).to eq(custom_id)
     end
 
     it "should work with ios keychain support" do
-      ENV['BROWSERSTACK_APP_ID'] = nil
       Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::IPA_OUTPUT_PATH] = nil
       expect(RestClient::Request).to receive(:execute).and_return({ "app_url" => "bs://app_url", "ios_keychain_support" => true }.to_json)
       fastfile = Fastlane::FastFile.new.parse("
@@ -165,6 +178,31 @@ describe Fastlane::Actions::UploadToBrowserstackAppAutomateAction do
       ")
       fastfile.runner.execute(:test, :ios)
       expect(ENV['BROWSERSTACK_APP_ID']).to eq("bs://app_url")
+      expect(ENV['BROWSERSTACK_CUSTOM_ID']).to eq("")
+    end
+
+    it "should use env var fallback for automate params" do
+      ENV['BROWSERSTACK_USERNAME'] = 'username'
+      ENV['BROWSERSTACK_ACCESS_KEY'] = 'access_key'
+      ENV['BROWSERSTACK_FILE_PATH'] = File.join(FIXTURE_PATH, 'HelloWorld.apk')
+      ENV['BROWSERSTACK_CUSTOM_ID'] = 'env_custom_id'
+      ENV['BROWSERSTACK_IOS_KEYCHAIN_SUPPORT'] = 'false'
+
+      expect(RestClient::Request).to receive(:execute).with(
+        hash_including(
+          payload: hash_including(
+            data: '{ "custom_id": "env_custom_id" }',
+            ios_keychain_support: 'false'
+          )
+        )
+      ).and_return({ "app_url" => "bs://app_url", "custom_id" => "response_custom_id" }.to_json)
+
+      Fastlane::FastFile.new.parse("lane :test do
+          upload_to_browserstack_app_automate({})
+        end").runner.execute(:test)
+
+      expect(ENV['BROWSERSTACK_APP_ID']).to eq("bs://app_url")
+      expect(ENV['BROWSERSTACK_CUSTOM_ID']).to eq("response_custom_id")
     end
   end
 end

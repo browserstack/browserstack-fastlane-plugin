@@ -20,6 +20,7 @@ module Fastlane
       # +custom_id+:: Custom id for app upload.
       # +file_path+:: Path to the file to be uploaded.
       # +url+:: BrowserStack's app upload endpoint.
+      # Returns:: Hash response from BrowserStack upload API.
       def self.upload_file(browserstack_username, browserstack_access_key, file_path, url, custom_id = nil, ios_keychain_support = nil)
         payload = {
           multipart: true,
@@ -47,13 +48,7 @@ module Fastlane
             headers: headers
           )
 
-          response_json = JSON.parse(response.to_s)
-
-          if !response_json["custom_id"].nil?
-            return response_json["custom_id"]
-          else
-            return response_json["app_url"]
-          end
+          JSON.parse(response.to_s)
         rescue RestClient::ExceptionWithResponse => err
           begin
             error_response = JSON.parse(err.response.to_s)["error"]
