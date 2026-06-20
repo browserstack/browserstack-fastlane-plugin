@@ -1,6 +1,10 @@
 describe Fastlane::Actions::UploadToBrowserstackAppLiveAction do
   describe 'Upload to BrowserStack AppLive' do
     before(:each) do
+      ENV['BROWSERSTACK_USERNAME'] = nil
+      ENV['BROWSERSTACK_ACCESS_KEY'] = nil
+      ENV['BROWSERSTACK_FILE_PATH'] = nil
+      ENV['BROWSERSTACK_LIVE_APP_ID'] = nil
       Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::GRADLE_APK_OUTPUT_PATH] = nil
       Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::GRADLE_AAB_OUTPUT_PATH] = nil
     end
@@ -118,7 +122,6 @@ describe Fastlane::Actions::UploadToBrowserstackAppLiveAction do
     end
 
     it "should work with correct params and specific file_path" do
-      ENV['BROWSERSTACK_LIVE_APP_ID'] = nil
       expect(RestClient::Request).to receive(:execute).and_return({ "app_url" => "bs://app_url" }.to_json)
       Fastlane::FastFile.new.parse("lane :test do
           upload_to_browserstack_app_live({
@@ -127,6 +130,19 @@ describe Fastlane::Actions::UploadToBrowserstackAppLiveAction do
             file_path: File.join(FIXTURE_PATH, 'HelloWorld.apk')
           })
         end").runner.execute(:test)
+      expect(ENV['BROWSERSTACK_LIVE_APP_ID']).to eq("bs://app_url")
+    end
+
+    it "should use env var fallback for live params" do
+      ENV['BROWSERSTACK_USERNAME'] = 'username'
+      ENV['BROWSERSTACK_ACCESS_KEY'] = 'access_key'
+      ENV['BROWSERSTACK_FILE_PATH'] = File.join(FIXTURE_PATH, 'HelloWorld.apk')
+
+      expect(RestClient::Request).to receive(:execute).and_return({ "app_url" => "bs://app_url" }.to_json)
+      Fastlane::FastFile.new.parse("lane :test do
+          upload_to_browserstack_app_live({})
+        end").runner.execute(:test)
+
       expect(ENV['BROWSERSTACK_LIVE_APP_ID']).to eq("bs://app_url")
     end
   end
